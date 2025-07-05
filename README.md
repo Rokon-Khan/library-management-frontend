@@ -1,4 +1,4 @@
-# Stuart Library Management System
+# Library and Book Management System
 
 This is a minimal library management system built with React, Redux Toolkit Query (RTK Query), TypeScript, React Router v7, Tailwind CSS, and Shadcn UI. It allows users to perform CRUD operations on books, borrow books, and view a borrow summary without requiring authentication. The application features a clean, responsive UI and efficient state management.
 
@@ -64,7 +64,7 @@ Check out the live demo: [Library Management System](https://library-and-book-ma
 ### Steps
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/your-username/library-management-system.git
+   git clone https://github.com/Rokon-Khan/library-management-frontend.git
    ```
 2. **Navigate to the Project Directory**:
    ```bash
@@ -79,7 +79,7 @@ Check out the live demo: [Library Management System](https://library-and-book-ma
    ```bash
    npm start
    ```
-   The application will be available at `http://localhost:3000`.
+   The application will be available at `http://localhost:5173/`.
 5. **Build for Production** (optional):
    ```bash
    npm run build
