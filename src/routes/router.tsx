@@ -1,6 +1,8 @@
 import { Layout } from "@/components/Layout";
 import { BookDetailPage } from "@/pages/BookDetailPage";
 import { BooksPage } from "@/pages/BooksPage";
+import { BorrowBookPage } from "@/pages/BorrowBookPage";
+import { BorrowSummaryPage } from "@/pages/BorrowSummaryPage";
 import { CreateBookPage } from "@/pages/CreateBookPage";
 import { EditBookPage } from "@/pages/EditBookPage";
 import Home from "@/pages/Home";
@@ -17,8 +19,8 @@ const router = createBrowserRouter([
       { path: "create-book", element: <CreateBookPage /> },
       { path: "books/:id", element: <BookDetailPage /> },
       { path: "edit-book/:id", element: <EditBookPage /> },
-      // { path: "borrow/:bookId", element: <BorrowBookPage /> },
-      // { path: "borrow-summary", element: <BorrowSummaryPage /> },
+      { path: "borrow/:bookId", element: <BorrowBookPage /> },
+      { path: "borrow-summary", element: <BorrowSummaryPage /> },
     ],
   },
   {
