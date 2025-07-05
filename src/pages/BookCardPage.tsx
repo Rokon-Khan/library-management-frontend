@@ -7,6 +7,17 @@ import { BookOpen, Edit, Info, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router";
 import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "../components/ui/alert-dialog";
 import { Badge } from "../components/ui/badge";
 import { Button } from "../components/ui/button";
 import {
@@ -51,7 +62,6 @@ export const BookCardPage = () => {
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8 text-center">
         <h1 className="text-3xl font-bold text-foreground">
-          {" "}
           Populor Library Books
         </h1>
         <p className="text-muted-foreground mt-2">
@@ -104,10 +114,7 @@ export const BookCardPage = () => {
                   </div>
                   <div>
                     <span className="font-semibold">Availability: </span>
-                    <Badge
-                      variant={book.available ? "default" : "secondary"}
-                      //   className={book.available ? "bg-library-sage" : ""}
-                    >
+                    <Badge variant={book.available ? "default" : "secondary"}>
                       {book.copies > 0 ? "Available" : "Unavailable"}
                     </Badge>
                   </div>
@@ -124,27 +131,50 @@ export const BookCardPage = () => {
                       Edit
                     </Link>
                   </Button>
-                  <Button
-                    asChild
-                    size="sm"
-                    variant="outline"
-                    // className="flex-1 bg-library-blue hover:bg-library-blue/90"
-                  >
+                  <Button asChild size="sm" variant="outline">
                     <Link to={`/books/${book._id}`}>
                       <Info className="h-4 w-4 mr-1" />
                       See Detail
                     </Link>
                   </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="flex-1 text-destructive hover:text-destructive"
-                    onClick={() => handleDeleteBook(book._id)}
-                    disabled={deletingBookId === book._id || isDeleting}
-                  >
-                    <Trash2 className="h-4 w-4 mr-1" />
-                    {deletingBookId === book._id ? "Deleting..." : "Delete"}
-                  </Button>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="flex-1 text-destructive hover:text-destructive"
+                        disabled={deletingBookId === book._id || isDeleting}
+                      >
+                        <Trash2 className="h-4 w-4 mr-1" />
+                        {deletingBookId === book._id ? "Deleting..." : "Delete"}
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Delete Book</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          Are you sure you want to delete "{book.title}"? This
+                          action cannot be undone.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel
+                          onClick={() => setDeletingBookId(null)}
+                        >
+                          Cancel
+                        </AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={() => handleDeleteBook(book._id)}
+                          disabled={deletingBookId === book._id || isDeleting}
+                          className="bg-destructive hover:bg-destructive/90"
+                        >
+                          {deletingBookId === book._id
+                            ? "Deleting..."
+                            : "Delete"}
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 </div>
               </CardContent>
             </Card>
