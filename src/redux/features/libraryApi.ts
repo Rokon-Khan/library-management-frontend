@@ -33,9 +33,31 @@ export interface BorrowSummary {
 export const libraryApi = createApi({
   reducerPath: "libraryApi",
   baseQuery: fetchBaseQuery({ baseUrl: import.meta.env.VITE_LIBRARY_API_URL }),
+  // tagTypes: ["Book", "Borrow"],
+  // endpoints: (builder) => ({
+  //   // BOOKS
+  //   getBooks: builder.query<
+  //     Book[],
+  //     { filter?: string; sortBy?: string; sort?: string; limit?: number }
+  //   >({
+  //     query: (params) => {
+  //       const qs = new URLSearchParams();
+  //       if (params.filter) qs.append("filter", params.filter);
+  //       if (params.sortBy) qs.append("sortBy", params.sortBy);
+  //       if (params.sort) qs.append("sort", params.sort);
+  //       if (params.limit) qs.append("limit", params.limit.toString());
+  //       return `books?${qs.toString()}`;
+  //     },
+  //     providesTags: (result) =>
+  //       result
+  //         ? [
+  //             ...result.map(({ _id }) => ({ type: "Book" as const, id: _id })),
+  //             { type: "Book", id: "LIST" },
+  //           ]
+  //         : [{ type: "Book", id: "LIST" }],
+  //   }),
   tagTypes: ["Book", "Borrow"],
   endpoints: (builder) => ({
-    // BOOKS
     getBooks: builder.query<
       Book[],
       { filter?: string; sortBy?: string; sort?: string; limit?: number }
@@ -48,6 +70,12 @@ export const libraryApi = createApi({
         if (params.limit) qs.append("limit", params.limit.toString());
         return `books?${qs.toString()}`;
       },
+      // Extract the array from the API response
+      transformResponse: (response: {
+        success: boolean;
+        message: string;
+        data: Book[];
+      }) => response.data,
       providesTags: (result) =>
         result
           ? [

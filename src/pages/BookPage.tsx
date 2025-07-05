@@ -1,3 +1,7 @@
+import {
+  useDeleteBookMutation,
+  useGetBooksQuery,
+} from "@/redux/features/libraryApi";
 import { BookOpen, Edit, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
@@ -29,75 +33,24 @@ import {
   TableHeader,
   TableRow,
 } from "../components/ui/table";
-// import { useToast } from "../hooks/use-toast";
-
-interface Book {
-  id: string;
-  title: string;
-  author: string;
-  genre: string;
-  isbn: string;
-  description?: string;
-  copies: number;
-  available: boolean;
-  createdAt?: string;
-  updatedAt?: string;
-}
-
-// Mock data for now
-const mockBooks: Book[] = [
-  {
-    id: "1",
-    title: "The Great Gatsby",
-    author: "F. Scott Fitzgerald",
-    genre: "Classic Literature",
-    isbn: "978-0-7432-7356-5",
-    description: "A classic novel set in the Jazz Age",
-    copies: 5,
-    available: true,
-    createdAt: "2024-01-01",
-  },
-  {
-    id: "2",
-    title: "To Kill a Mockingbird",
-    author: "Harper Lee",
-    genre: "Fiction",
-    isbn: "978-0-06-112008-4",
-    description: "A gripping tale of racial injustice and childhood",
-    copies: 3,
-    available: true,
-    createdAt: "2024-01-02",
-  },
-  {
-    id: "3",
-    title: "1984",
-    author: "George Orwell",
-    genre: "Dystopian Fiction",
-    isbn: "978-0-452-28423-4",
-    description: "A dystopian social science fiction novel",
-    copies: 0,
-    available: false,
-    createdAt: "2024-01-03",
-  },
-];
 
 export const BooksPage = () => {
   const navigate = useNavigate();
-  //   const { toast } = useToast();
-  const [books, setBooks] = useState<Book[]>(mockBooks);
+  const { data: books, isLoading, isError, error } = useGetBooksQuery({});
+  const [deleteBook, { isLoading: isDeleting }] = useDeleteBookMutation();
   const [deletingBookId, setDeletingBookId] = useState<string | null>(null);
 
   const handleDeleteBook = async (bookId: string) => {
     try {
       setDeletingBookId(bookId);
-      // Simulate API call
-      setTimeout(() => {
-        setBooks((prev) => prev.filter((book) => book.id !== bookId));
-        toast.success("Book deleted successfully");
-        setDeletingBookId(null);
-      }, 1000);
-    } catch (error) {
-      toast.error("Failed to delete book");
+      // Await API call
+      await deleteBook(bookId).unwrap();
+      toast.success("Book deleted successfully");
+      setDeletingBookId(null);
+    } catch (error: any) {
+      toast.error(
+        error?.data?.message || error?.message || "Failed to delete book"
+      );
       setDeletingBookId(null);
     }
   };
@@ -129,7 +82,13 @@ export const BooksPage = () => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          {!books || books.length === 0 ? (
+          {isLoading ? (
+            <div className="text-center py-8">Loading...</div>
+          ) : isError ? (
+            <div className="text-center py-8 text-red-500">
+              {error instanceof Error ? error.message : "Failed to load books."}
+            </div>
+          ) : !books || books.length === 0 ? (
             <div className="text-center py-8">
               <BookOpen className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
               <p className="text-muted-foreground">No books available</p>
@@ -153,10 +112,10 @@ export const BooksPage = () => {
                 </TableHeader>
                 <TableBody>
                   {books.map((book) => (
-                    <TableRow key={book.id}>
+                    <TableRow key={book._id}>
                       <TableCell>
                         <Link
-                          to={`/books/${book.id}`}
+                          to={`/books/${book._id}`}
                           className="font-medium hover:text-library-blue transition-colors"
                         >
                           {book.title}
@@ -179,7 +138,7 @@ export const BooksPage = () => {
                       <TableCell className="text-right">
                         <div className="flex items-center justify-end gap-2">
                           <Button size="sm" variant="outline" asChild>
-                            <Link to={`/edit-book/${book.id}`}>
+                            <Link to={`/edit-book/${book._id}`}>
                               <Edit className="h-4 w-4" />
                             </Link>
                           </Button>
@@ -191,7 +150,7 @@ export const BooksPage = () => {
                               asChild
                               className="bg-library-blue hover:bg-library-blue/90"
                             >
-                              <Link to={`/borrow/${book.id}`}>Borrow</Link>
+                              <Link to={`/borrow/${book._id}`}>Borrow</Link>
                             </Button>
                           )}
 
@@ -216,11 +175,11 @@ export const BooksPage = () => {
                               <AlertDialogFooter>
                                 <AlertDialogCancel>Cancel</AlertDialogCancel>
                                 <AlertDialogAction
-                                  onClick={() => handleDeleteBook(book.id)}
-                                  disabled={deletingBookId === book.id}
+                                  onClick={() => handleDeleteBook(book._id)}
+                                  disabled={deletingBookId === book._id}
                                   className="bg-destructive hover:bg-destructive/90"
                                 >
-                                  {deletingBookId === book.id
+                                  {deletingBookId === book._id
                                     ? "Deleting..."
                                     : "Delete"}
                                 </AlertDialogAction>
