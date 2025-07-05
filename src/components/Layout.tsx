@@ -8,7 +8,7 @@ export const Layout = () => {
     <div className="min-h-screen bg-background flex flex-col">
       <Navbar />
       <main className="flex-1">
-        <Toaster richColors position="top-right" />
+        <Toaster richColors position="top-center" />
         <Outlet />
       </main>
       <Footer />
