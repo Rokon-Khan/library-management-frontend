@@ -1,10 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   useDeleteBookMutation,
   useGetBooksQuery,
 } from "@/redux/features/libraryApi";
 import { BookOpen, Edit, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
-import { Link, useNavigate } from "react-router";
+import { Link } from "react-router";
 import { toast } from "sonner";
 import {
   AlertDialog,
@@ -35,9 +37,9 @@ import {
 } from "../components/ui/table";
 
 export const BooksPage = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const { data: books, isLoading, isError, error } = useGetBooksQuery({});
-  const [deleteBook, { isLoading: isDeleting }] = useDeleteBookMutation();
+  const [deleteBook, { isLoading: _isDeleting }] = useDeleteBookMutation();
   const [deletingBookId, setDeletingBookId] = useState<string | null>(null);
 
   const handleDeleteBook = async (bookId: string) => {

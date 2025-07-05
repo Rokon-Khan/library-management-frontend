@@ -39,8 +39,13 @@ export const CreateBookPage = () => {
       await createBook(formData).unwrap();
       toast("Book created successfully");
       navigate("/books");
-    } catch (error: any) {
-      toast(error?.data?.message || error?.message || "Failed to create book");
+    } catch (error: unknown) {
+      if (typeof error === "object" && error !== null) {
+        const err = error as { data?: { message?: string }; message?: string };
+        toast(err?.data?.message || err?.message || "Failed to create book");
+      } else {
+        toast("Failed to create book");
+      }
     }
   };
 

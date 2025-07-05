@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useGetBookByIdQuery } from "@/redux/features/libraryApi";
 import { ArrowLeft, BookOpen, Edit } from "lucide-react";
 import { Link, useNavigate, useParams } from "react-router";

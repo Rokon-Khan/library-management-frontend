@@ -19,8 +19,16 @@ export const BorrowSummaryPage = () => {
   // Fetch borrow summary from RTK Query
   const { data, isLoading, isError, error } = useGetBorrowedSummaryQuery();
 
-  // The API response is { success, message, data: [...] }
-  const borrowSummary = data?.data || [];
+  // The API response is { success, message, data: BorrowSummary[] }
+  type BorrowSummary = {
+    book: {
+      title?: string;
+      isbn?: string;
+    };
+    totalQuantity: number;
+  };
+  const borrowSummary: BorrowSummary[] =
+    data && "data" in data && Array.isArray(data.data) ? data.data : [];
 
   const totalBooksBorrowed = borrowSummary?.length || 0;
   const totalCopiesBorrowed =
@@ -87,7 +95,7 @@ export const BorrowSummaryPage = () => {
           ) : isError ? (
             <div className="text-center py-8 text-destructive">
               {error && typeof error === "object" && "data" in error
-                ? (error as any).data?.message ||
+                ? (error as { data?: { message?: string } }).data?.message ||
                   "Failed to load borrow summary"
                 : "Failed to load borrow summary"}
             </div>

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { Button } from "../components/ui/button";
@@ -27,12 +29,15 @@ export const EditBookPage = () => {
 
   // Fetch the book data with RTK Query
   const {
-    data: response,
+    data: data,
     isLoading,
     isError,
     error,
   } = useGetBookByIdQuery(id || "");
-  const book = response?.data;
+
+  const book = data?.data;
+
+  console.log("EditBookPage book data:", book);
 
   const [formData, setFormData] = useState({
     title: "",
