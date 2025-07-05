@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
+
 import {
   useDeleteBookMutation,
   useGetBooksQuery,
@@ -36,16 +37,49 @@ import {
   TableRow,
 } from "../components/ui/table";
 
+// Genre and sort options
+const GENRE_OPTIONS = [
+  { value: "", label: "All Genres" },
+  { value: "FICTION", label: "Fiction" },
+  { value: "NON_FICTION", label: "Non-fiction" },
+  { value: "SCIENCE", label: "Science" },
+  { value: "HISTORY", label: "History" },
+  { value: "BIOGRAPHY", label: "Biography" },
+  { value: "FANTASY", label: "Fantasy" },
+];
+
+const SORT_OPTIONS = [
+  { value: "", label: "Default" },
+  { value: "title", label: "Title" },
+  { value: "author", label: "Author" },
+  { value: "copies", label: "Copies" },
+  { value: "createdAt", label: "Created Date" },
+];
+
 export const BooksPage = () => {
-  // const navigate = useNavigate();
-  const { data: books, isLoading, isError, error } = useGetBooksQuery({});
+  // Filter, sort state
+  const [genre, setGenre] = useState<string>("");
+  const [sortBy, setSortBy] = useState<string>("");
+  const [sort, setSort] = useState<"asc" | "desc">("asc");
+
+  // Prepare query parameters for RTK Query
+  const queryParams: any = {};
+  if (genre) queryParams.filter = genre;
+  if (sortBy) {
+    queryParams.sortBy = sortBy;
+    queryParams.sort = sort;
+  }
+
+  const { data, isLoading, isError, error } = useGetBooksQuery(queryParams);
+  const books = data || [];
+  // Accept both .data and array response for compatibility
+
   const [deleteBook, { isLoading: _isDeleting }] = useDeleteBookMutation();
   const [deletingBookId, setDeletingBookId] = useState<string | null>(null);
 
   const handleDeleteBook = async (bookId: string) => {
     try {
       setDeletingBookId(bookId);
-      // Await API call
       await deleteBook(bookId).unwrap();
       toast.success("Book deleted successfully");
       setDeletingBookId(null);
@@ -55,6 +89,21 @@ export const BooksPage = () => {
       );
       setDeletingBookId(null);
     }
+  };
+
+  // Handle genre filter change
+  const handleGenreChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setGenre(e.target.value);
+  };
+
+  // Handle sort by change
+  const handleSortByChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSortBy(e.target.value);
+  };
+
+  // Handle sort order toggle (asc/desc)
+  const handleSortOrderToggle = () => {
+    setSort((prev) => (prev === "asc" ? "desc" : "asc"));
   };
 
   return (
@@ -75,12 +124,46 @@ export const BooksPage = () => {
         </Button>
       </div>
 
+      {/* Filter & Sort Controls */}
+      <div className="flex justify-end mb-4 gap-2">
+        <select
+          value={genre}
+          onChange={handleGenreChange}
+          className="border rounded px-3 py-2 text-sm"
+        >
+          {GENRE_OPTIONS.map((g) => (
+            <option value={g.value} key={g.value}>
+              {g.label}
+            </option>
+          ))}
+        </select>
+        <select
+          value={sortBy}
+          onChange={handleSortByChange}
+          className="border rounded px-3 py-2 text-sm"
+        >
+          {SORT_OPTIONS.map((opt) => (
+            <option value={opt.value} key={opt.value}>
+              Sort by {opt.label}
+            </option>
+          ))}
+        </select>
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={handleSortOrderToggle}
+          className="ml-2"
+        >
+          {sort === "asc" ? "Asc" : "Desc"}
+        </Button>
+      </div>
+
       {/* Books Table */}
       <Card className="bg-gradient-card shadow-book">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <BookOpen className="h-5 w-5" />
-            All Books ({books?.length || 0})
+            All Books ({books.length})
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -113,7 +196,7 @@ export const BooksPage = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {books.map((book) => (
+                  {books.map((book: any) => (
                     <TableRow key={book._id}>
                       <TableCell>
                         <Link
@@ -132,7 +215,6 @@ export const BooksPage = () => {
                       <TableCell>
                         <Badge
                           variant={book.available ? "default" : "secondary"}
-                          className={book.available ? "bg-library-sage" : ""}
                         >
                           {book.available ? "Available" : "Unavailable"}
                         </Badge>
@@ -148,7 +230,7 @@ export const BooksPage = () => {
                           {book.available && book.copies > 0 && (
                             <Button
                               size="sm"
-                              variant="default"
+                              variant="outline"
                               asChild
                               className="bg-library-blue hover:bg-library-blue/90"
                             >

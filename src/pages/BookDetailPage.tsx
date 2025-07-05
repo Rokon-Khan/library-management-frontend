@@ -80,7 +80,8 @@ export const BookDetailPage = () => {
           {book.available && book.copies > 0 && (
             <Button
               asChild
-              className="bg-library-blue hover:bg-library-blue/90"
+              variant="outline"
+              // className="bg-library-blue hover:bg-library-blue/90"
             >
               <Link to={`/borrow/${book._id}`}>Borrow Book</Link>
             </Button>
@@ -152,6 +153,7 @@ export const BookDetailPage = () => {
               {book.available && book.copies > 0 && (
                 <Button
                   asChild
+                  variant={"outline"}
                   className="w-full bg-library-blue hover:bg-library-blue/90"
                 >
                   <Link to={`/borrow/${book._id}`}>Borrow This Book</Link>

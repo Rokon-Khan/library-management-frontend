@@ -7,6 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "../components/ui/card";
+import { BookCardPage } from "./BookCardPage";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -21,7 +22,7 @@ const Index = () => {
   // }, [navigate]);
 
   return (
-    <div className="min-h-[calc(100vh-8rem)] flex items-center justify-center bg-gradient-hero">
+    <div className="min-h-[calc(100vh-8rem)] flex flex-col items-center justify-center bg-gradient-hero">
       <div className="container mx-auto px-4 py-16">
         <div className="text-center mb-12">
           <div className="flex items-center justify-center mb-6">
@@ -46,7 +47,8 @@ const Index = () => {
               </p>
               <Button
                 onClick={() => navigate("/books")}
-                className="bg-library-brown hover:bg-library-brown/90"
+                variant={"outline"}
+                // className="bg-library-brown hover:bg-library-brown/90"
               >
                 View All Books
               </Button>
@@ -63,8 +65,9 @@ const Index = () => {
                 Easily add new books to your library
               </p>
               <Button
+                variant={"outline"}
                 onClick={() => navigate("/create-book")}
-                className="bg-library-blue hover:bg-library-blue/90"
+                // className="bg-library-blue hover:bg-library-blue/90"
               >
                 Add New Book
               </Button>
@@ -83,8 +86,9 @@ const Index = () => {
                 Monitor borrowing activity and summaries
               </p>
               <Button
+                variant={"outline"}
                 onClick={() => navigate("/borrow-summary")}
-                className="bg-library-sage hover:bg-library-sage/90"
+                // className="bg-library-sage hover:bg-library-sage/90"
               >
                 View Summary
               </Button>
@@ -93,9 +97,9 @@ const Index = () => {
         </div>
 
         <div className="text-center">
-          <p className="text-library-cream/60 text-sm mb-4">
+          {/* <p className="text-library-cream/60 text-sm mb-4">
             Automatically redirecting to books in 3 seconds...
-          </p>
+          </p> */}
           <Button
             variant="outline"
             onClick={() => navigate("/books")}
@@ -105,6 +109,7 @@ const Index = () => {
           </Button>
         </div>
       </div>
+      <BookCardPage />
     </div>
   );
 };
